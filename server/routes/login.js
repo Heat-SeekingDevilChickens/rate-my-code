@@ -35,7 +35,6 @@ router.post('/createUser',
     If there is no user with that name or the password does not match, return a message and remove user from res.locals to avoid passing client user information
   Finally, if we have succesfully verified a user(data is in res.locals.user) redirect to main container. If failed to verify user, send failure message
 */
-
 router.post('/',
   loginController.getUser,
   loginController.verifyUser,

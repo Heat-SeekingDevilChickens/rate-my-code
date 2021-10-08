@@ -13,27 +13,22 @@ import classes from './MainContainer.module.css';
 import './custom.scss';
 
 export default function MainContainer() {
+  //const [topic, setTopic] = useState('Java');
 
-  const [topic, setTopic] = useState('Java');
+  const languages = ['Javascript', 'Python', 'C#', 'C++', 'Java', 'PHP'];
+
+  const menuItems = languages.map((lang) => (
+    <MenuItem key={lang}>
+      <Link to={`/home/feed/${lang}`}>{lang}</Link>
+    </MenuItem>
+  ));
 
   return (
     <Container className={classes.mainContainer}>
       <ProSidebar className={classes.sidebar}>
-        <Menu iconShape="square">
-          <MenuItem>
-            <Link to="/home">Home</Link>
-          </MenuItem>
-          <MenuItem>
-            <Link to="/home/feed">Feed</Link>
-          </MenuItem>
-          <MenuItem><Link to="/home/JavaScript">JavaScript</Link></MenuItem>
-          <MenuItem><Link to="/home/Python">Python</Link></MenuItem>
-          <MenuItem><Link to="/home/C#">C#</Link></MenuItem>
-          <MenuItem><Link to="/home/C++">C++</Link></MenuItem>
-          <MenuItem><Link to="/home/Java">Java</Link></MenuItem>
-          <MenuItem><Link to="/home/PHP">PHP</Link></MenuItem>
-        </Menu>
+        <Menu iconShape="square">{menuItems}</Menu>
       </ProSidebar>
+
       {/* we may need to import other components below */}
       <Switch>
         <Route path="/home" exact>
@@ -42,11 +37,12 @@ export default function MainContainer() {
         <Route path="/home/createpost">
           <CreatePost />
         </Route>
-        <Route path="/home/feed">
-          <Feed topic={topic} />
+        <Route path="/home/feed/:lang">
+          <Feed />
           {/* <FeedCodeBlock /> */}
         </Route>
       </Switch>
+
       {/* <main className={classes.codeBlockContainer}>
         <FeedCodeBlock />
         <FeedCodeBlock />
@@ -55,6 +51,7 @@ export default function MainContainer() {
         <FeedCodeBlock />
         <FeedCodeBlock />
       </main> */}
+
       <div>
         <Link to="/home/createpost">
           <svg

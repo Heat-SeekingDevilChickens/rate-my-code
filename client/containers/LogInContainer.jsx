@@ -33,7 +33,7 @@ export default function LogInContainer() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        if (data) {
+        if (!data.err) {
           setVerified(true);
         }
       })
@@ -58,8 +58,7 @@ export default function LogInContainer() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-        if (data) {
+        if (!data.err) {
           setSignedup(true);
         }
       })

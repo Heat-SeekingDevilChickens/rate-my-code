@@ -7,7 +7,8 @@
     "start": "node server/server.js",
     "build": "cross-env NODE_ENV=production webpack",
     "dev": "cross-env NODE_ENV=development concurrently \"webpack serve --open\" \"nodemon server/server.js\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "jest": "jest --verbose"
   },
   "repository": {
     "type": "git",
@@ -35,11 +36,14 @@
     "css-loader": "^6.3.0",
     "html-webpack-plugin": "^5.3.2",
     "install": "^0.13.0",
+    "jest": "^27.2.4",
     "nodemon": "^2.0.13",
     "npm": "^7.24.1",
+    "redux-devtools-extension": "^2.13.9",
     "sass": "^1.42.1",
     "sass-loader": "^12.1.0",
     "style-loader": "^3.3.0",
+    "supertest": "^6.1.6",
     "webpack": "^5.56.0",
     "webpack-cli": "^4.8.0",
     "webpack-dev-server": "^3.11.2"
@@ -56,10 +60,13 @@
     "pg": "^8.7.1",
     "postgres": "^1.0.2",
     "react": "^17.0.2",
+    "react-ace": "^9.4.4",
     "react-bootstrap": "^2.0.0-rc.0",
     "react-dom": "^17.0.2",
     "react-pro-sidebar": "^0.7.1",
+    "react-redux": "^7.2.5",
     "react-router-bootstrap": "^0.25.0",
-    "react-router-dom": "^5.3.0"
+    "react-router-dom": "^5.3.0",
+    "redux": "^4.1.1"
   }
 }

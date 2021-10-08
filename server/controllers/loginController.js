@@ -18,13 +18,13 @@ loginController.getUser = (req, res, next) => {
 
   // Query our DB o find username store result in res.locals.user
   db.query(query.text, query.params, (err, dbResponse) => {
-    if(err) {
+    if (err) {
       next({
         log: 'ERROR: loginController.getUser',
         message: { err: err.message }
       });
     }
-    if(dbResponse.rows[0])  res.locals.user = dbResponse.rows[0];
+    if (dbResponse.rows[0])  res.locals.user = dbResponse.rows[0];
     return next();
   });
 };
@@ -35,12 +35,12 @@ loginController.getUser = (req, res, next) => {
     and remove user from res.locals to avoid passing client user information
 */
 loginController.verifyUser = (req, res, next) => {
-  if(!res.locals.user) {  
+  if (!res.locals.user) {  
     return next(); 
   } 
 
   const { password } = req.body;
-  if(password !== res.locals.user.password) {
+  if (password !== res.locals.user.password) {
     delete res.locals.user;
   }
   
@@ -53,11 +53,20 @@ loginController.verifyUser = (req, res, next) => {
   If user not found, create user in database, store new user in res.locals.user and move on
 */     
 loginController.createUser = (req, res, next) => {
-  if(res.locals.user) {
+  if (res.locals.user) {
     delete res.locals.user;
     return next();
   }
+
   const { username, password } = req.body;
+  // Check if a username and password have been entered. 
+  if (username.length < 3 || password.length < 5) {
+    return next({  
+      log: 'Invalid user name or password',
+      message: {err: err.message}
+    })
+  }
+
 
   const query = {
     text: `

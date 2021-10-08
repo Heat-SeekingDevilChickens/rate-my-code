@@ -7,6 +7,12 @@ const router = express.Router();
 
 /* Handle routes to the /api route */
 
+
+router.get('/getAll', apiController.getAll, (req, res) => {
+  res.status(200).json(res.locals.allPosts);
+});
+
+
 // Handle POST request to /getTopic 
 // Receive a topicID the req.body
 // Use getTopic to retrieve the requested topicID and store in res.locals.topic
@@ -59,10 +65,7 @@ router.post('/editPost', apiController.editPost, (req, res) => {
 
 // Handle POST request to /createComment 
 router.post('/createComment', apiController.createComment, (req, res) => {
-  if(!res.locals.createdComment) {
-    res.status(500).json({message: 'Something went wrong creating your comment.'});
-  }
-  res.status(200).json(res.locals.createdComment);
+  res.status(200).json('successfully created a comment');
 });
 
 // Handle DELETE request to /deleteComment  

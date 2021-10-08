@@ -3,6 +3,33 @@ const db = require('../models/models');
 
 const apiController = {};
 
+
+//retrieve all posts
+apiController.getAll = (req, res, next) => {
+  const query = {
+    text: `
+      SELECT *
+      FROM posts
+      ORDER BY _id DESC;`,
+    params: []
+  };
+
+  
+  db.query(query.text, query.params, (err, dbResponse) => {
+    if(err) {
+      next({
+        log: 'ERROR: apiController.getAll',
+        message: { err: err.message }
+      });
+    }
+
+    res.locals.allPosts = dbResponse.rows;
+    return next();
+  });
+  
+};
+
+
 apiController.getTopic = (req, res, next) => {
   const topic = req.params.topic; 
 
@@ -10,14 +37,13 @@ apiController.getTopic = (req, res, next) => {
     text: `
       SELECT *
       FROM posts
-      WHERE topic = $1;
-    `,
+      WHERE topic = $1;`,
     params: [topic]
   };
 
   db.query(query.text, query.params, (err, dbResponse) => {
     if(err) {
-      next({
+      return next({
         log: 'ERROR: apiController.getTopic',
         message: { err: err.message }
       });
@@ -29,13 +55,13 @@ apiController.getTopic = (req, res, next) => {
 };
 
 apiController.getPost = (req, res, next) => {
-  const id = req.params.post; 
+  const id = req.params.id; 
 
   const query = {
     text: `
       SELECT *
       FROM posts
-      WHERE id = $1;
+      WHERE _id = $1;
     `,
     params: [id]
   };
@@ -48,22 +74,21 @@ apiController.getPost = (req, res, next) => {
       });
     }
 
-    res.locals.post.postContent = dbResponse.rows[0];
+    res.locals.post = dbResponse.rows[0];
     return next();
   });
 };
 
 apiController.getComments = (req, res, next) => {
-  const id = req.body.post;
+  const id = req.params.id;
 
-  // get comments from comments table using foreign key of correct post
+
   const query = {
     text: `
-      SELECT c.* 
-      FROM comments c
-      LEFT JOIN posts p
-      ON c.post_id = p.$1;
-    `,
+    SELECT *
+    FROM comments
+    WHERE post_id = $1
+    ORDER BY _id DESC;`,
     params: [id]
   };
 
@@ -75,26 +100,11 @@ apiController.getComments = (req, res, next) => {
       });
     }
 
-    res.locals.post.comments = dbResponse.rows;
+    res.locals.post.postComments = dbResponse.rows;
     return next();
   });
 };
 
-/*
-  const createdPost = {
-      topic: enteredTopic,
-      date: Date.now(),
-      upvotes: 0,
-      downvotes: 0,
-      title: enteredTitle,
-      issue: enteredIssue,
-      tried: enteredTried,
-      cause: enteredCause,
-      // description: enteredDescription,
-      code: enteredCode,
-      userId: null, // use cookie data to input user ID
-    };
-*/
 apiController.createPost = (req, res, next) => {
   console.log('About to create a post'); 
   const user_id = req.cookies.userID;
@@ -210,15 +220,15 @@ apiController.editPost = (req, res, next) => {
 
 apiController.createComment = (req, res, next) => {
   const user_id = req.headers.cookie;
-  
+  console.log('Request Body:', req.body)
   const { 
     comment,
     code,
     upvotes,
     downvotes,
     date,
-    post_id
-  } = req.body.createComment;
+    post_id,
+  } = req.body;
   
   const query = {
     text: `
@@ -231,8 +241,7 @@ apiController.createComment = (req, res, next) => {
         post_id,
         user_id
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING *;
+      VALUES ($1, $2, $3, $4, $5, $6, $7);
     `,
     params: [
       comment,
@@ -247,13 +256,13 @@ apiController.createComment = (req, res, next) => {
 
   db.query(query.text, query.params, (err, dbResponse) => {
     if(err) {
+      console.log('DB ERROR: ', err);
       next({
         log: 'ERROR: apiController.createComment',
         message: { err: err.message }
       });
     }
-
-    res.locals.createdComment = dbResponse.rows[0];
+    
     return next();
   });
 };
