@@ -3,7 +3,6 @@ const db = require('../models/models');
 
 const apiController = {};
 
-
 //retrieve all posts
 apiController.getAll = (req, res, next) => {
   const query = {
@@ -11,41 +10,38 @@ apiController.getAll = (req, res, next) => {
       SELECT *
       FROM posts
       ORDER BY _id DESC;`,
-    params: []
+    params: [],
   };
 
-  
   db.query(query.text, query.params, (err, dbResponse) => {
-    if(err) {
+    if (err) {
       next({
         log: 'ERROR: apiController.getAll',
-        message: { err: err.message }
+        message: { err: err.message },
       });
     }
 
     res.locals.allPosts = dbResponse.rows;
     return next();
   });
-  
 };
 
-
 apiController.getTopic = (req, res, next) => {
-  const topic = req.params.topic; 
+  const topic = req.params.topic;
 
   const query = {
     text: `
       SELECT *
       FROM posts
       WHERE topic = $1;`,
-    params: [topic]
+    params: [topic],
   };
 
   db.query(query.text, query.params, (err, dbResponse) => {
-    if(err) {
+    if (err) {
       return next({
         log: 'ERROR: apiController.getTopic',
-        message: { err: err.message }
+        message: { err: err.message },
       });
     }
 
@@ -55,7 +51,9 @@ apiController.getTopic = (req, res, next) => {
 };
 
 apiController.getPost = (req, res, next) => {
-  const id = req.params.id; 
+  const id = req.params.id;
+
+  console.log(id);
 
   const query = {
     text: `
@@ -63,14 +61,14 @@ apiController.getPost = (req, res, next) => {
       FROM posts
       WHERE _id = $1;
     `,
-    params: [id]
+    params: [id],
   };
-  
+
   db.query(query.text, query.params, (err, dbResponse) => {
-    if(err) {
+    if (err) {
       next({
         log: 'ERROR: apiController.getPost',
-        message: { err: err.message }
+        message: { err: err.message },
       });
     }
 
@@ -82,21 +80,21 @@ apiController.getPost = (req, res, next) => {
 apiController.getComments = (req, res, next) => {
   const id = req.params.id;
 
-
   const query = {
     text: `
-    SELECT *
+    SELECT comments.*, users.username
     FROM comments
+    JOIN users on comments.user_id = users._id
     WHERE post_id = $1
     ORDER BY _id DESC;`,
-    params: [id]
+    params: [id],
   };
 
   db.query(query.text, query.params, (err, dbResponse) => {
-    if(err) {
+    if (err) {
       next({
         log: 'ERROR: apiController.getComments',
-        message: { err: err.message }
+        message: { err: err.message },
       });
     }
 
@@ -106,9 +104,9 @@ apiController.getComments = (req, res, next) => {
 };
 
 apiController.createPost = (req, res, next) => {
-  console.log('About to create a post'); 
+  console.log('About to create a post');
   const user_id = req.cookies.userID;
-  const { 
+  const {
     topic,
     // date,
     upvotes,
@@ -117,7 +115,7 @@ apiController.createPost = (req, res, next) => {
     issue,
     tried,
     cause,
-    code
+    code,
   } = req.body;
 
   const query = {
@@ -145,15 +143,15 @@ apiController.createPost = (req, res, next) => {
       tried,
       cause,
       code,
-      user_id
-    ]
+      user_id,
+    ],
   };
 
   db.query(query.text, query.params, (err, dbResponse) => {
-    if(err) {
+    if (err) {
       next({
         log: 'ERROR: apiController.createPost',
-        message: { err: err.message }
+        message: { err: err.message },
       });
     }
     res.locals.createdPost = true;
@@ -162,8 +160,7 @@ apiController.createPost = (req, res, next) => {
 };
 
 apiController.editPost = (req, res, next) => {
-    
-  const { 
+  const {
     _id,
     topic,
     date,
@@ -173,13 +170,13 @@ apiController.editPost = (req, res, next) => {
     issue,
     tried,
     cause,
-    code
+    code,
   } = req.body.editPost;
 
   const query = {
     text: `
       UPDATE posts
-      SET 
+      SET
         topic = $2,
         date = $3,
         upvotes = $4,
@@ -201,15 +198,15 @@ apiController.editPost = (req, res, next) => {
       issue,
       tried,
       cause,
-      code
-    ]
+      code,
+    ],
   };
-  
+
   db.query(query.text, query.params, (err, dbResponse) => {
-    if(err) {
-      next({
+    if (err) {
+      return next({
         log: 'ERROR: apiController.editPost',
-        message: { err: err.message }
+        message: { err: err.message },
       });
     }
 
@@ -219,17 +216,9 @@ apiController.editPost = (req, res, next) => {
 };
 
 apiController.createComment = (req, res, next) => {
-  const user_id = req.headers.cookie;
-  console.log('Request Body:', req.body)
-  const { 
-    comment,
-    code,
-    upvotes,
-    downvotes,
-    date,
-    post_id,
-  } = req.body;
-  
+  const { userID } = req.cookies;
+  const { comment, code, upvotes, downvotes, date, post_id } = req.body;
+
   const query = {
     text: `
       INSERT INTO comments (
@@ -243,29 +232,20 @@ apiController.createComment = (req, res, next) => {
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7);
     `,
-    params: [
-      comment,
-      code,
-      upvotes,
-      downvotes,
-      date,
-      post_id,
-      user_id
-    ]
+    params: [comment, code, upvotes, downvotes, date, post_id, userID],
   };
 
   db.query(query.text, query.params, (err, dbResponse) => {
-    if(err) {
+    if (err) {
       console.log('DB ERROR: ', err);
       next({
         log: 'ERROR: apiController.createComment',
-        message: { err: err.message }
+        message: { err: err.message },
       });
     }
-    
+
     return next();
   });
 };
-
 
 module.exports = apiController;

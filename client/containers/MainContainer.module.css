@@ -1,15 +1,16 @@
 .mainContainer {
   display: flex !important;
   justify-content: space-between;
+  height: 100%;
 }
 
 .sidebar {
   /* background-color: white; */
-  color: black;
+  height: 100%;
 }
 
-.codeBlockContainer {
+/* .codeBlockContainer {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-}
+} */

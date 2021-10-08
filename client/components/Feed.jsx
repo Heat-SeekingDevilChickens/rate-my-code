@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-// import ReactDOM from 'react-dom';
+import { useParams, Link } from 'react-router-dom';
 import MainContainer from '../containers/MainContainer.jsx';
 import FeedCodeBlock from './FeedCodeBlock.jsx';
 import * as actions from '../actions/actions';
@@ -24,33 +24,44 @@ function Feed(props) {
   // const [codeBlocks, setCodeBlocks] = useState([]);
 
   // update state that we fetch
+
+  const { lang } = useParams();
+
   useEffect(() => {
-    fetch(`/api/getAll`)
+    const url = lang ? `/api/getTopic/${lang}` : '/api/getAll';
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
         props.loadAllCodeBlocks(data);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [lang]);
 
   // create codeblock components and save them in an array
   const codeBlocks = props.codeBlocks.map((post, index) => {
-    return <AceEditor key={index}
-    mode="javascript"
-    editorProps={{ $blockScrolling: true }}
-    setOptions={{
-      enableBasicAutocompletion: true,
-      enableLiveAutocompletion: true,
-      enableSnippets: true,
-    }}
-    theme="monokai"
-    name="code"
-    defaultValue={post.code}
-    readOnly={true}
-  ></AceEditor>
+    return (
+      <div key={index} className="post">
+        <AceEditor
+          mode="javascript"
+          editorProps={{ $blockScrolling: true }}
+          setOptions={{
+            enableBasicAutocompletion: true,
+            enableLiveAutocompletion: true,
+            enableSnippets: true,
+          }}
+          theme="monokai"
+          name="code"
+          defaultValue={post.code}
+          readOnly={true}
+          height="250px"
+          width="25vw"
+        ></AceEditor>
+
+        <Link to={`/home/post/${post._id}`}>See post</Link>
+      </div>
+    );
   });
 
-  // console.log(props.match.params.params1);
   return <div>{codeBlocks}</div>;
 }
 

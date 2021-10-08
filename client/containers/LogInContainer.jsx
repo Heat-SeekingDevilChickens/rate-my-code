@@ -30,13 +30,7 @@ export default function LogInContainer() {
       },
       body: JSON.stringify(user),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        if (!data.err) {
-          setVerified(true);
-        }
-      })
+      .then((res) => setVerified(res.status === 200))
       .catch((err) => console.log('POST REQUEST ERROR: ', err));
   }
 
@@ -56,12 +50,7 @@ export default function LogInContainer() {
       },
       body: JSON.stringify(user),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.err) {
-          setSignedup(true);
-        }
-      })
+      .then((res) => setSignedup(res.status === 200))
       .catch((err) => console.log('POST REQUEST ERROR: ', err));
   }
 
@@ -80,11 +69,6 @@ export default function LogInContainer() {
   return (
     <Container className={classes.mainContainer}>
       <Container className={classes.insideContainer}>
-        {/* temp bar to delete after development */}
-        <header>
-          TEMP NAV BAR: <br />
-          <Link to="/home">Home</Link>
-        </header>
         <h1>Rate-My-Code</h1>
         <form>
           <div className={classes.inputContainer}>

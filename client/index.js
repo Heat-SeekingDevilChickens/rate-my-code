@@ -10,9 +10,7 @@ import App from './App.jsx';
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <div>
-        <App />
-      </div>
+      <App />
     </BrowserRouter>
   </Provider>,
   document.getElementById('root')

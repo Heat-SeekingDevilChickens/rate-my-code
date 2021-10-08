@@ -1,5 +1,20 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap');
 
-body {
+html,
+body,
+#root {
+  height: 100%;
   font-family: 'Roboto', sans-serif;
+}
+
+.post {
+  margin-bottom: 70px;
+}
+
+#commentForm {
+  width: 100%;
+}
+
+#main {
+  display: flex;
 }

@@ -17,7 +17,8 @@ const router = express.Router();
     If created succesfully redirect them to the main container
     If unsucsessful return message that could not create user
 */
-router.post('/createUser',
+router.post(
+  '/createUser',
   loginController.getUser,
   loginController.createUser,
   loginController.setCookie,
@@ -25,8 +26,9 @@ router.post('/createUser',
     if (!res.locals.user) {
       res.status(400).json({ message: 'Could not create user' });
     }
-    res.status(200).json({userID: res.locals.user._id});
-  });
+    res.status(200).json({ userID: res.locals.user._id });
+  }
+);
 
 // Handle request to / for loging in a user
 /*
@@ -35,7 +37,8 @@ router.post('/createUser',
     If there is no user with that name or the password does not match, return a message and remove user from res.locals to avoid passing client user information
   Finally, if we have succesfully verified a user(data is in res.locals.user) redirect to main container. If failed to verify user, send failure message
 */
-router.post('/',
+router.post(
+  '/',
   loginController.getUser,
   loginController.verifyUser,
   loginController.setCookie,
@@ -43,8 +46,9 @@ router.post('/',
     if (!res.locals.user) {
       res.status(400).json({ message: 'Could not verify login credentials' });
     }
-    res.status(200).json({userID: res.locals.user._id});
-  });
+    res.status(200).json({ userID: res.locals.user._id });
+  }
+);
 
 // export as router
 module.exports = router;

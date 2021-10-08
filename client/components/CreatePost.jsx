@@ -5,8 +5,16 @@ import { render } from 'react-dom';
 import MainContainer from '../containers/MainContainer.jsx';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import TextField from '@mui/material/TextField';
-import { Button, Select, MenuItem, InputLabel } from '@mui/material';
+import {
+  Button,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  OutlinedInput,
+} from '@mui/material';
 import AceEditor from 'react-ace';
+import classes from './CreatePost.module.css';
 
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/mode-javascript';
@@ -76,8 +84,24 @@ export default function CreatePost() {
 
   // remove MainContainer when we implement React Router
   return (
-    <div>
-      {/* <HighlightOffIcon id="cancel-post" /> */}
+    <FormControl className={classes.postForm} margin="normal" fullwidth>
+      <InputLabel id="demo-simple-select-label">Language</InputLabel>
+      <Select
+        labelId="demo-simple-select-label"
+        id="topic"
+        name="topic"
+        label="language"
+        value={state.topic}
+        margin="normal"
+        onChange={handleChange}
+      >
+        <MenuItem value="Javascript">JavaScript</MenuItem>
+        <MenuItem value="Python">Python</MenuItem>
+        <MenuItem value="C-sharp">C#</MenuItem>
+        <MenuItem value="C-plus-plus">C++</MenuItem>
+        <MenuItem value="Java">Java</MenuItem>
+        <MenuItem value="PHP">PHP</MenuItem>
+      </Select>
 
       <TextField
         id="title"
@@ -85,31 +109,16 @@ export default function CreatePost() {
         value={state.title}
         label="Title"
         variant="outlined"
+        margin="normal"
         onChange={handleChange}
       />
-
-      <InputLabel id="topic">Choose a Language</InputLabel>
-
-      <Select
-        id="topic"
-        name="topic"
-        label="Choose a language"
-        value={state.topic}
-        onChange={handleChange}
-      >
-        <MenuItem value="javascript">JavaScript</MenuItem>
-        <MenuItem value="python">Python</MenuItem>
-        <MenuItem value="c-sharp">C#</MenuItem>
-        <MenuItem value="c-plus-plus">C++</MenuItem>
-        <MenuItem value="java">Java</MenuItem>
-        <MenuItem value="php">PHP</MenuItem>
-      </Select>
 
       <TextField
         id="issue"
         name="issue"
         value={state.issue}
         label="What is the problem"
+        margin="normal"
         variant="outlined"
         size="small"
         fullWidth
@@ -121,6 +130,7 @@ export default function CreatePost() {
         name="tried"
         value={state.tried}
         label="What I've Tried"
+        margin="normal"
         variant="outlined"
         size="medium"
         fullWidth
@@ -133,6 +143,7 @@ export default function CreatePost() {
         value={state.cause}
         label="Why I think it's not working"
         variant="outlined"
+        margin="normal"
         size="large"
         fullWidth
         onChange={handleChange}
@@ -150,6 +161,7 @@ export default function CreatePost() {
       /> */}
 
       <AceEditor
+        className={classes.aceEditor}
         mode="javascript"
         editorProps={{ $blockScrolling: true }}
         setOptions={{
@@ -167,6 +179,6 @@ export default function CreatePost() {
       <Button id="submit" variant="contained" onClick={submitCode}>
         Submit
       </Button>
-    </div>
+    </FormControl>
   );
 }
