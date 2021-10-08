@@ -40,7 +40,7 @@ function Feed(props) {
   // create codeblock components and save them in an array
   const codeBlocks = props.codeBlocks.map((post, index) => {
     return (
-      <div key={index} className="post">
+      <div key={post._id} className="post">
         <AceEditor
           mode="javascript"
           editorProps={{ $blockScrolling: true }}

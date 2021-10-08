@@ -15,7 +15,7 @@ apiController.getAll = (req, res, next) => {
 
   db.query(query.text, query.params, (err, dbResponse) => {
     if (err) {
-      next({
+      return next({
         log: 'ERROR: apiController.getAll',
         message: { err: err.message },
       });
